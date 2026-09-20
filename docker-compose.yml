@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: heatnet
+      POSTGRES_USER: heatnet
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-heatnet_local_dev}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U heatnet -d heatnet"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  app:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - '127.0.0.1:8080:8080'
+    environment:
+      JAVA_TOOL_OPTIONS: -Xmx4g
+      DB_URL: jdbc:postgresql://db:5432/heatnet
+      DB_USER: heatnet
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-heatnet_local_dev}
+      HEATNET_STORAGE: /data/uploads
+    volumes:
+      - upload_data:/data/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+volumes:
+  postgres_data:
+  upload_data:

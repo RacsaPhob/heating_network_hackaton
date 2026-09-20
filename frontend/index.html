@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Теплосеть — моделирование подключений</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23172535'/%3E%3Cpath d='M8 24V8h8v8h8v8' fill='none' stroke='%23f18b49' stroke-width='4'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/vendor/leaflet.css"><link rel="stylesheet" href="/styles.css?v=0.2"><link rel="stylesheet" href="/workspace.css?v=0.2">
+  <script defer src="/vendor/leaflet.js"></script><script defer src="/app.js?v=0.2"></script>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="/" aria-label="Теплосеть, главная"><span class="brand-symbol"><svg viewBox="0 0 32 32"><path d="M7 25V7h9v9h9v9M7 16h9"/></svg></span><span>теплосеть<span class="brand-dot">.</span></span></a>
+  <div class="header-divider"></div><div class="header-title">Моделирование подключений<span>Инженерное рабочее пространство</span></div>
+  <div class="header-end"><button id="history-button" class="header-button">История</button><span class="version">MVP 0.2</span><span id="server-state" class="server-state"><i></i>Подключение…</span><a href="/swagger-ui/index.html" target="_blank" rel="noopener" class="api-link">API ↗</a></div>
+</header>
+<div class="workspace">
+  <aside class="sidebar">
+    <div class="project-label">НОВЫЙ РАСЧЁТ <span>01</span></div>
+    <h1>От данных<br>к новой сети</h1>
+    <p class="intro">Найдите пути подключения зданий и сравните стоимость решений.</p>
+    <section>
+      <div class="section-label"><span>01</span> Исходные данные</div>
+      <button id="upload-button" class="dropzone" type="button"><span class="upload-icon">↥</span><strong>Загрузить GeoJSON</strong><small>или перетащите файл сюда · до 20 МБ</small></button>
+      <input id="file-input" type="file" accept=".geojson,.json,application/geo+json,application/json" hidden>
+      <button id="sample-button" class="sample-button" type="button"><span class="sample-icon">▦</span><span>Открыть конкурсный набор<small>Территория ЗИЛ, Москва</small></span><span class="arrow">↗</span></button>
+      <div id="file-card" class="file-card" hidden><span class="file-icon">▤</span><div><strong id="file-name"></strong><small id="file-meta"></small></div><span id="file-status"></span></div>
+    </section>
+    <section>
+      <div class="section-label"><span>02</span> Режим обработки</div>
+      <div class="segmented" role="group" aria-label="Режим обработки"><button class="active" data-mode="demo" aria-pressed="true">Демонстрационный</button><button data-mode="strict" aria-pressed="false">Строгий</button></div>
+      <p id="mode-description" class="hint">Для неполных данных. Все допущения будут перечислены в результате.</p>
+    </section>
+    <section id="layers-section">
+      <div class="section-label"><span>03</span> Слои карты</div>
+      <label class="layer-row"><span><i class="legend-line existing"></i>Существующая сеть</span><input type="checkbox" data-layer="network" checked></label>
+      <label class="layer-row"><span><i class="legend-dot consumer"></i>Точки подключения</span><input type="checkbox" data-layer="connections" checked></label>
+      <label class="layer-row"><span><i class="legend-square"></i>Здания и ограничения</span><input type="checkbox" data-layer="restrictions" checked></label>
+      <label class="layer-row"><span><i class="legend-line proposed"></i>Новая сеть</span><input type="checkbox" data-layer="result" checked></label>
+      <label class="layer-row basemap-row"><span><i class="legend-square base"></i>Подложка OpenStreetMap</span><input type="checkbox" id="basemap-toggle"></label>
+    </section>
+    <details id="diagnostics" class="diagnostics" hidden><summary>Проверка данных <span id="diagnostic-count"></span></summary><div id="diagnostic-list"></div></details>
+    <div class="sidebar-bottom"><button id="calculate-button" class="primary" disabled><span>Построить варианты</span><span>→</span></button><p class="small-note">До трёх вариантов · расчёт в плоскости</p></div>
+  </aside>
+  <main class="main">
+    <div class="main-heading"><div><div class="eyebrow">СХЕМА ТЕПЛОСНАБЖЕНИЯ</div><h2 id="workspace-title">Территория подключения</h2></div><span id="mode-badge" class="mode-badge">Демонстрационный режим</span></div>
+    <div class="metrics">
+      <div class="metric"><span>Подключаемые объекты</span><strong id="metric-objects">—</strong><small id="metric-objects-note">ожидают загрузки</small></div>
+      <div class="metric"><span>Расчётный расход</span><strong id="metric-flow">— <em>т/ч</em></strong><small>суммарно по потребителям</small></div>
+      <div class="metric"><span>Длина новой сети</span><strong id="metric-length">— <em>м</em></strong><small id="metric-length-note">после построения маршрутов</small></div>
+      <div class="metric"><span id="cost-label">Предварительная стоимость</span><strong id="metric-cost">— <em>млн ₽</em></strong><small id="metric-cost-note">после расчёта</small></div>
+    </div>
+    <div class="map-layout">
+      <section class="map-card" aria-label="Карта тепловой сети">
+        <div id="map"></div>
+        <div class="map-toolbar"><div class="map-search"><label class="visually-hidden" for="object-search">Найти объект по ID или адресу</label><input id="object-search" placeholder="Поиск по ID или адресу…" autocomplete="off" type="search" disabled><div id="search-results" hidden></div></div><button id="fit-button" title="Показать всю территорию" aria-label="Показать всю территорию">⛶</button></div>
+        <div id="empty-map" class="empty-map"><div class="empty-symbol"><svg viewBox="0 0 100 100"><path d="M16 70V30h32v40h35M48 48h35V24"/><circle cx="16" cy="70" r="5"/><circle cx="83" cy="70" r="5"/><circle cx="83" cy="24" r="5"/></svg></div><h3>У каждого здания есть путь</h3><p>Загрузите карту территории или откройте<br>конкурсный набор, чтобы начать.</p><button id="empty-sample-button">Открыть пример <span>→</span></button></div>
+        <div id="progress-overlay" class="progress-overlay" hidden><div class="spinner"></div><strong id="progress-stage">Подготовка расчёта</strong><div class="progress-track"><i id="progress-bar"></i></div><small>Можно изучать карту, пока выполняется расчёт</small></div>
+        <div class="map-footer"><span id="map-coordinates">WGS 84 · метрические расчёты UTM 37N</span><span>2D</span></div>
+        <div id="inspector" class="inspector" hidden><button id="close-inspector" aria-label="Закрыть карточку">×</button><div id="inspector-content"></div></div>
+      </section>
+      <aside class="result-panel">
+        <div class="result-heading"><div class="eyebrow">РЕЗУЛЬТАТ</div><h2>Варианты сети</h2><span id="variants-count">0</span></div>
+        <div id="result-empty" class="result-empty"><div class="result-diagram"><span></span><span></span><span></span></div><h3>Сравните решения</h3><p>Здесь появятся маршруты, их протяжённость и стоимость.</p><div class="ranking-note"><strong>70% <span>стоимость</span></strong><strong>30% <span>протяжённость</span></strong></div><p class="muted">Меньше итоговая оценка — выше вариант в списке.</p></div>
+        <div id="variants-list"></div>
+        <div id="connection-issues" hidden></div>
+        <button id="compare-button" class="secondary compare-button" disabled>Сравнить в таблице ↗</button>
+        <div id="cost-breakdown" hidden></div>
+        <details id="route-notes" hidden><summary>Проверки и ограничения</summary><div id="route-notes-content"></div></details>
+        <div class="result-bottom"><button id="download-button" class="secondary" disabled>↓ <span>Скачать GeoJSON</span></button><button id="csv-button" class="text-button" disabled>↓ Сводка для Excel · CSV</button><p id="export-note">Все найденные варианты в одном файле</p></div>
+      </aside>
+    </div>
+    <div id="notice" class="notice"><span class="notice-icon">i</span><span id="notice-text">Эскизное моделирование. Результат требует инженерной проверки.</span><span class="notice-tag">MVP</span></div>
+  </main>
+</div>
+<dialog id="history-dialog" class="app-dialog"><div class="dialog-heading"><div><div class="eyebrow">РАБОЧЕЕ ПРОСТРАНСТВО</div><h2>История расчётов</h2></div><button class="close-dialog" data-close="history-dialog" aria-label="Закрыть историю">×</button></div><p class="dialog-intro">Последние 50 расчётов. Откройте любой, чтобы вернуться к его карте и результатам.</p><div id="history-list"></div></dialog>
+<dialog id="comparison-dialog" class="app-dialog wide"><div class="dialog-heading"><div><div class="eyebrow">АНАЛИЗ ВАРИАНТОВ</div><h2>Сравнение решений</h2></div><button class="close-dialog" data-close="comparison-dialog" aria-label="Закрыть сравнение">×</button></div><p class="dialog-intro">Оценка = 0,7 × (стоимость / 25 млн ₽) + 0,3 × (общая длина / 100 м). Штраф входит в стоимость, но не является расходами на строительство.</p><div id="comparison-table" class="table-scroll"></div><p class="dialog-footnote">Реконструкция с неизвестной стоимостью отмечена отдельно. Прохождение реализованных проверок не заменяет инженерную проверку проекта.</p></dialog>
+<div id="toast" class="toast" role="alert" hidden></div>
+</body>
+</html>

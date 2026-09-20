@@ -1,0 +1,11 @@
+tmp/
+**/target/
+**/node_modules/
+**/dist/
+**/__pycache__/
+*.pyc
+.env
+.idea/
+.vscode/
+storage/
+.tools/

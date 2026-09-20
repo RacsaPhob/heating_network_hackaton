@@ -1,0 +1,172 @@
+{
+  "strict_structural_validation_passed": false,
+  "feature_count": 144,
+  "object_counts": {
+    "heat_chamber": 9,
+    "heat_network": 29,
+    "oks_connection_point": 17,
+    "restriction": 88,
+    "source": 1
+  },
+  "restriction_counts": {
+    "oks": 85,
+    "railway": 1,
+    "water": 2
+  },
+  "flow_in_connection_points_tph": 488.72,
+  "errors": [
+    {
+      "code": "ID_NOT_STRING",
+      "severity": "error",
+      "message": "The appendix requires nonempty string IDs",
+      "count": 144,
+      "example_object_ids": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10"
+      ]
+    },
+    {
+      "code": "MISSING_HEAT_CHAMBER_DIAMETER",
+      "severity": "error",
+      "message": "Missing required property heat_chamber.diameter",
+      "count": 9,
+      "example_object_ids": [
+        "106",
+        "107",
+        "108",
+        "109",
+        "110",
+        "111",
+        "112",
+        "113",
+        "114"
+      ]
+    },
+    {
+      "code": "MISSING_HEAT_CHAMBER_UPSTREAM_OBJECT_ID",
+      "severity": "error",
+      "message": "Missing required property heat_chamber.upstream_object_id",
+      "count": 9,
+      "example_object_ids": [
+        "106",
+        "107",
+        "108",
+        "109",
+        "110",
+        "111",
+        "112",
+        "113",
+        "114"
+      ]
+    },
+    {
+      "code": "MISSING_HEAT_NETWORK_FLOW_TPH",
+      "severity": "error",
+      "message": "Missing required property heat_network.flow_tph",
+      "count": 29,
+      "example_object_ids": [
+        "115",
+        "116",
+        "117",
+        "118",
+        "119",
+        "120",
+        "121",
+        "122",
+        "123",
+        "124"
+      ]
+    },
+    {
+      "code": "MISSING_HEAT_NETWORK_UPSTREAM_OBJECT_ID",
+      "severity": "error",
+      "message": "Missing required property heat_network.upstream_object_id",
+      "count": 29,
+      "example_object_ids": [
+        "115",
+        "116",
+        "117",
+        "118",
+        "119",
+        "120",
+        "121",
+        "122",
+        "123",
+        "124"
+      ]
+    },
+    {
+      "code": "MISSING_OKS_CONNECTION_POINT_OKS_ID",
+      "severity": "error",
+      "message": "Missing required property oks_connection_point.oks_id",
+      "count": 17,
+      "example_object_ids": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10"
+      ]
+    },
+    {
+      "code": "NO_FUTURE_OKS",
+      "severity": "error",
+      "message": "No oks_future objects for connection calculation",
+      "count": 1,
+      "example_object_ids": [
+        "dataset"
+      ]
+    },
+    {
+      "code": "UNKNOWN_RESTRICTION_OKS",
+      "severity": "error",
+      "message": "No defined rule for restriction_type=oks",
+      "count": 85,
+      "example_object_ids": [
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29",
+        "30"
+      ]
+    },
+    {
+      "code": "UNKNOWN_RESTRICTION_RAILWAY",
+      "severity": "error",
+      "message": "No defined rule for restriction_type=railway",
+      "count": 1,
+      "example_object_ids": [
+        "18"
+      ]
+    }
+  ],
+  "not_checked": [
+    "coordinate validity and CRS transformation",
+    "polygon validity",
+    "spatial topology and metric clearances",
+    "capacity and diameter monotonicity",
+    "routing feasibility",
+    "complete conformity to the competition requirements"
+  ],
+  "file": "!!!_Датасет.geojson",
+  "size_bytes": 233277,
+  "sha256": "07921d7740c0297a63111846d4b77dfb6ccb33da65ffd7ccb14c5b2d786dd7d0"
+}

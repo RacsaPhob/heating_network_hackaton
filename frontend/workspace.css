@@ -1,0 +1,49 @@
+/* Analysis tools added in v0.2. */
+.header-button{border:1px solid #475665;background:transparent;border-radius:5px;color:#d5dde5;font-size:11px;padding:7px 12px}
+.header-button:hover{background:#2a3e52}
+.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+.map-search{pointer-events:auto;position:relative;width:min(270px,calc(100% - 50px))}
+.map-search input{width:100%;height:35px;border:1px solid #d9e1de;border-radius:6px;padding:0 11px;background:#fffffff5;color:#4d6473;font:inherit;font-size:11px;box-shadow:0 2px 8px #1b39400a}
+.map-search input::placeholder{color:#92a29e}
+#search-results{position:absolute;top:41px;left:0;width:100%;background:#fff;border:1px solid #dce3e1;border-radius:7px;box-shadow:0 10px 30px #233b4e20;overflow:auto;max-height:300px}
+#search-results button{display:block;width:100%;text-align:left;border:0;border-bottom:1px solid #edf0f0;border-radius:0;font-size:11px;padding:10px 12px;color:#4f6574;transform:none}
+#search-results button:hover,#search-results button:focus-visible{background:#f5f8f7}
+#search-results button strong{display:block;font-size:11px;font-weight:500}
+#search-results button small{display:block;margin-top:4px;font-size:9px;color:#94a19f;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#search-results p{padding:6px 12px;color:#899996;font-size:11px}
+.compare-button{font-size:10px;margin:4px 0 0;background:#f8fafb;padding:10px}
+.text-button{width:100%;background:none;border:0;color:#6f8491;padding:12px 4px 2px;font-size:10px}
+.text-button:hover:not(:disabled){color:#b57746}
+#connection-issues{background:#fff5f1;border:1px solid #efd8ce;border-radius:6px;padding:11px;margin:3px 0 12px}
+#connection-issues>strong{font-size:10px;font-weight:600;color:#ac6a52}
+#connection-issues>p{font-size:9px;line-height:1.6;color:#b18e7d;margin:6px 0 10px}
+.issue-chips{display:flex;flex-wrap:wrap;gap:5px}
+.issue-chips button{background:#fff9f5;border:1px solid #e6c8b9;color:#ae735d;border-radius:4px;font-size:9px;padding:5px 7px}
+.issue-chips button:hover{background:#f9e4d6}
+.app-dialog{border:1px solid #dde4e9;border-radius:12px;padding:26px 28px;color:#33495a;width:min(760px,92vw);max-height:85vh;box-shadow:0 24px 100px #0c223e38}
+.app-dialog::backdrop{background:#10243766;backdrop-filter:blur(3px)}
+.app-dialog.wide{width:min(1060px,94vw)}
+.dialog-heading{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.dialog-heading h2{font-size:23px;font-weight:600;letter-spacing:-.6px;margin:0}
+.close-dialog{align-self:flex-start;border:1px solid #e2e8eb;background:#f6f8fa;color:#8496a3;border-radius:5px;font-size:22px;line-height:28px;width:30px;height:30px}
+.dialog-intro{font-size:12px;line-height:1.8;color:#8b9aa6;margin:17px 0 20px;max-width:850px}
+.dialog-footnote{font-size:10px;line-height:1.7;color:#a18b73;margin:18px 0 0}
+.history-item{display:flex;align-items:center;gap:16px;padding:15px 12px;width:100%;border:1px solid #e3e9ec;border-radius:7px;background:#fff;color:#5a6f7e;text-align:left;margin:8px 0}
+.history-item:hover{background:#f8fafb;border-color:#bbcbd4}
+.history-item>div:first-child{min-width:0;flex:1}
+.history-item strong{font-size:12px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+.history-item small{display:block;color:#9ba7b0;font-size:10px;margin-top:5px}
+.history-meta{text-align:right;font-size:10px}
+.history-item>span{font-size:16px;color:#acb7c0}
+#history-list{font-size:12px;line-height:1.6;color:#8799a4}
+.table-scroll{overflow:auto;border:1px solid #e0e7ec;border-radius:7px}
+.table-scroll table{border-collapse:collapse;min-width:640px;width:100%;font-size:12px;font-variant-numeric:tabular-nums}
+.table-scroll th,.table-scroll td{padding:12px 16px;border-bottom:1px solid #e9eef1;text-align:left}
+.table-scroll thead th{font-size:11px;font-weight:600;background:#eff4f5;color:#567080;min-width:185px}
+.table-scroll thead small{display:block;font-size:9px;font-weight:400;margin-top:5px;color:#8e9fa9}
+.table-scroll tbody th{font-weight:400;color:#8a9ba6;font-size:11px;min-width:215px}
+.table-scroll td{color:#5d7483}
+.table-scroll tbody tr:nth-child(9),.table-scroll tbody tr:nth-child(14){background:#fff7ef}
+.table-scroll tbody tr:nth-child(9) td,.table-scroll tbody tr:nth-child(14) td{color:#a87245;font-weight:600}
+.table-scroll tr:last-child th,.table-scroll tr:last-child td{border-bottom:0}
+@media(max-width:660px){.header-end{gap:8px}.header-button{font-size:10px;padding:6px 9px}.server-state{font-size:9px;max-width:95px}.topbar{gap:10px}.brand{font-size:20px;gap:7px}.app-dialog{padding:20px 15px}.dialog-heading h2{font-size:20px}.dialog-intro{font-size:11px}.history-item{gap:9px;padding:12px 9px}.history-meta{font-size:9px;max-width:120px}.history-item small{font-size:9px}.map-search{width:min(260px,calc(100% - 45px))}.table-scroll th,.table-scroll td{padding:11px 12px}.map-toolbar{top:12px;left:12px;right:12px}}

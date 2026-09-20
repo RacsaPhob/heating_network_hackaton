@@ -1,0 +1,7 @@
+.git
+tmp
+.tools
+**/*.docx
+**/target
+**/node_modules
+storage

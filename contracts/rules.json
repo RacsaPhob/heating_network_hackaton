@@ -1,0 +1,424 @@
+{
+  "version": "0.1",
+  "source": {
+    "file": "Техническое приложение.docx",
+    "sha256": "6c6c0c895a6956b3b75a06c57f6c96261e6b438f3b9fb6d859a4b25998c593cc",
+    "sections": [
+      "4.1",
+      "4.2",
+      "5.1",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10"
+    ],
+    "note": "Tables extracted automatically; other rules transcribed. Unresolved questions: docs/DATASET_REVIEW.md"
+  },
+  "input_crs": "EPSG:4326",
+  "calculation_crs": "EPSG:32637",
+  "diameters": [
+    {
+      "diameter_mm": 50,
+      "capacity_tph": 3.5,
+      "max_continuous_length_m": 181,
+      "construction_rub_per_m": 74023,
+      "reconstruction_rub_per_m": 96180,
+      "shell_diameter_m": 0.125,
+      "shell_gap_m": 0.15,
+      "pair_width_m": 0.4,
+      "pair_height_m": 0.125
+    },
+    {
+      "diameter_mm": 65,
+      "capacity_tph": 8.3,
+      "max_continuous_length_m": 245,
+      "construction_rub_per_m": 78631,
+      "reconstruction_rub_per_m": 109989,
+      "shell_diameter_m": 0.14,
+      "shell_gap_m": 0.15,
+      "pair_width_m": 0.43,
+      "pair_height_m": 0.14
+    },
+    {
+      "diameter_mm": 80,
+      "capacity_tph": 13.2,
+      "max_continuous_length_m": 327,
+      "construction_rub_per_m": 83530,
+      "reconstruction_rub_per_m": 117582,
+      "shell_diameter_m": 0.16,
+      "shell_gap_m": 0.15,
+      "pair_width_m": 0.47,
+      "pair_height_m": 0.16
+    },
+    {
+      "diameter_mm": 100,
+      "capacity_tph": 22.3,
+      "max_continuous_length_m": 419,
+      "construction_rub_per_m": 89748,
+      "reconstruction_rub_per_m": 133694,
+      "shell_diameter_m": 0.18,
+      "shell_gap_m": 0.15,
+      "pair_width_m": 0.51,
+      "pair_height_m": 0.18
+    },
+    {
+      "diameter_mm": 125,
+      "capacity_tph": 40.2,
+      "max_continuous_length_m": 554,
+      "construction_rub_per_m": 97275,
+      "reconstruction_rub_per_m": 148030,
+      "shell_diameter_m": 0.225,
+      "shell_gap_m": 0.15,
+      "pair_width_m": 0.6,
+      "pair_height_m": 0.225
+    },
+    {
+      "diameter_mm": 150,
+      "capacity_tph": 65.1,
+      "max_continuous_length_m": 696,
+      "construction_rub_per_m": 105507,
+      "reconstruction_rub_per_m": 152295,
+      "shell_diameter_m": 0.25,
+      "shell_gap_m": 0.15,
+      "pair_width_m": 0.65,
+      "pair_height_m": 0.25
+    },
+    {
+      "diameter_mm": 200,
+      "capacity_tph": 152.3,
+      "max_continuous_length_m": 1042,
+      "construction_rub_per_m": 120275,
+      "reconstruction_rub_per_m": 181766,
+      "shell_diameter_m": 0.315,
+      "shell_gap_m": 0.25,
+      "pair_width_m": 0.88,
+      "pair_height_m": 0.315
+    },
+    {
+      "diameter_mm": 250,
+      "capacity_tph": 274.9,
+      "max_continuous_length_m": 1379,
+      "construction_rub_per_m": 135323,
+      "reconstruction_rub_per_m": 202030,
+      "shell_diameter_m": 0.4,
+      "shell_gap_m": 0.25,
+      "pair_width_m": 1.05,
+      "pair_height_m": 0.4
+    },
+    {
+      "diameter_mm": 300,
+      "capacity_tph": 437.4,
+      "max_continuous_length_m": 1718,
+      "construction_rub_per_m": 150022,
+      "reconstruction_rub_per_m": 228707,
+      "shell_diameter_m": 0.45,
+      "shell_gap_m": 0.25,
+      "pair_width_m": 1.15,
+      "pair_height_m": 0.45
+    },
+    {
+      "diameter_mm": 400,
+      "capacity_tph": 943.1,
+      "max_continuous_length_m": 2477,
+      "construction_rub_per_m": 190299,
+      "reconstruction_rub_per_m": 271317,
+      "shell_diameter_m": 0.56,
+      "shell_gap_m": 0.25,
+      "pair_width_m": 1.37,
+      "pair_height_m": 0.56
+    },
+    {
+      "diameter_mm": 500,
+      "capacity_tph": 1663.4,
+      "max_continuous_length_m": 3245,
+      "construction_rub_per_m": 224137,
+      "reconstruction_rub_per_m": 333884,
+      "shell_diameter_m": 0.71,
+      "shell_gap_m": 0.25,
+      "pair_width_m": 1.67,
+      "pair_height_m": 0.71
+    },
+    {
+      "diameter_mm": 600,
+      "capacity_tph": 2627.7,
+      "max_continuous_length_m": 4037,
+      "construction_rub_per_m": 264790,
+      "reconstruction_rub_per_m": 372703,
+      "shell_diameter_m": 0.8,
+      "shell_gap_m": 0.25,
+      "pair_width_m": 1.85,
+      "pair_height_m": 0.8
+    },
+    {
+      "diameter_mm": 700,
+      "capacity_tph": 3735.1,
+      "max_continuous_length_m": 4775,
+      "construction_rub_per_m": 324298,
+      "reconstruction_rub_per_m": 439571,
+      "shell_diameter_m": 0.9,
+      "shell_gap_m": 0.25,
+      "pair_width_m": 2.05,
+      "pair_height_m": 0.9
+    },
+    {
+      "diameter_mm": 800,
+      "capacity_tph": 5296.8,
+      "max_continuous_length_m": 5644,
+      "construction_rub_per_m": 325996,
+      "reconstruction_rub_per_m": 489918,
+      "shell_diameter_m": 1.0,
+      "shell_gap_m": 0.25,
+      "pair_width_m": 2.25,
+      "pair_height_m": 1.0
+    },
+    {
+      "diameter_mm": 900,
+      "capacity_tph": 7165.0,
+      "max_continuous_length_m": 6518,
+      "construction_rub_per_m": 327693,
+      "reconstruction_rub_per_m": 553607,
+      "shell_diameter_m": 1.1,
+      "shell_gap_m": 0.25,
+      "pair_width_m": 2.45,
+      "pair_height_m": 1.1
+    },
+    {
+      "diameter_mm": 1000,
+      "capacity_tph": 9391.8,
+      "max_continuous_length_m": 7419,
+      "construction_rub_per_m": 418777,
+      "reconstruction_rub_per_m": 606679,
+      "shell_diameter_m": 1.2,
+      "shell_gap_m": 0.25,
+      "pair_width_m": 2.65,
+      "pair_height_m": 1.2
+    },
+    {
+      "diameter_mm": 1200,
+      "capacity_tph": 15012.8,
+      "max_continuous_length_m": 9288,
+      "construction_rub_per_m": 428074,
+      "reconstruction_rub_per_m": 825692,
+      "shell_diameter_m": 1.425,
+      "shell_gap_m": 0.25,
+      "pair_width_m": 3.1,
+      "pair_height_m": 1.425
+    },
+    {
+      "diameter_mm": 1400,
+      "capacity_tph": 22501.9,
+      "max_continuous_length_m": 11276,
+      "construction_rub_per_m": 683417,
+      "reconstruction_rub_per_m": 978584,
+      "shell_diameter_m": 1.6,
+      "shell_gap_m": 0.25,
+      "pair_width_m": 3.45,
+      "pair_height_m": 1.6
+    }
+  ],
+  "chambers": [
+    {
+      "min_diameter_mm": 50,
+      "max_diameter_mm": 200,
+      "cost_rub": 3000000
+    },
+    {
+      "min_diameter_mm": 250,
+      "max_diameter_mm": 500,
+      "cost_rub": 5000000
+    },
+    {
+      "min_diameter_mm": 600,
+      "max_diameter_mm": 1000,
+      "cost_rub": 8000000
+    },
+    {
+      "min_diameter_mm": 1200,
+      "max_diameter_mm": 1400,
+      "cost_rub": 12000000
+    }
+  ],
+  "tie_in_cost_rub": 5000000,
+  "existing_chamber_snap_distance_m": 10,
+  "max_chamber_degree": 4,
+  "penalty": {
+    "fixed_rub_per_oks": 100000000,
+    "rub_per_tph": 500000
+  },
+  "ranking": {
+    "cost_weight": 0.7,
+    "cost_scale_rub": 25000000,
+    "length_weight": 0.3,
+    "length_scale_m": 100
+  },
+  "building_clearance_bands": [
+    {
+      "min_diameter_mm": 50,
+      "max_diameter_mm": 400,
+      "clearance_m": 5
+    },
+    {
+      "min_diameter_mm": 500,
+      "max_diameter_mm": 800,
+      "clearance_m": 7
+    },
+    {
+      "min_diameter_mm": 900,
+      "max_diameter_mm": 1400,
+      "clearance_m": 9
+    }
+  ],
+  "restrictions": {
+    "park": {
+      "crossing": "forbidden",
+      "clearance_m": 1
+    },
+    "social_area": {
+      "crossing": "forbidden",
+      "clearance_m": 1
+    },
+    "prohibited_site": {
+      "crossing": "forbidden",
+      "clearance_m": 1
+    },
+    "water": {
+      "crossing": "forbidden",
+      "clearance_m": 1
+    },
+    "road": {
+      "crossing": "special",
+      "clearance_m": 1.5,
+      "min_angle_deg": 45,
+      "extension_each_side_m": 3,
+      "coefficient": 1.6,
+      "min_top_depth_m": 1.0
+    },
+    "tram_tracks": {
+      "crossing": "special",
+      "clearance_m": 1.5,
+      "min_angle_deg": 45,
+      "extension_each_side_m": 3,
+      "coefficient": 1.75,
+      "min_top_depth_m": 1.2
+    },
+    "gas_pipeline": {
+      "crossing": "special",
+      "clearance_m": 2,
+      "extension_each_side_m": 2,
+      "coefficient": 1.25,
+      "vertical_gap_m": 0.2,
+      "existing_top_depth_m": 2.8,
+      "existing_width_m": 0.4,
+      "existing_height_m": 0.4
+    },
+    "power_cable": {
+      "crossing": "special",
+      "clearance_m": 2,
+      "extension_each_side_m": 2,
+      "coefficient": 1.15,
+      "vertical_gap_m": 0.5,
+      "existing_top_depth_m": 2.7,
+      "existing_width_m": 0.2,
+      "existing_height_m": 0.2
+    },
+    "heat_network": {
+      "crossing": "special",
+      "clearance_m": 1,
+      "extension_each_side_m": 2,
+      "coefficient": 1.05,
+      "vertical_gap_m": 0.5,
+      "existing_top_depth_m": 3.0
+    }
+  },
+  "unknown_restriction_policy": "error",
+  "depth": {
+    "optional_mode": true,
+    "base_top_depth_m": 3.0,
+    "min_top_depth_m": 0.7,
+    "step_m": 0.5,
+    "max_slope": 0.1,
+    "extra_cost_per_m_below_base": 0.1,
+    "max_depth_m": null,
+    "grid_origin_m": null,
+    "note": "Maximum depth and grid origin require clarification; null is not an unlimited search range."
+  },
+  "output_required_properties": {
+    "heat_network": [
+      "id",
+      "object_type",
+      "variant_id",
+      "start_node_id",
+      "end_node_id",
+      "flow_tph",
+      "diameter",
+      "length",
+      "laying_method",
+      "depth_start",
+      "depth_end",
+      "cost"
+    ],
+    "tie_in": [
+      "id",
+      "object_type",
+      "variant_id",
+      "existing_object_id",
+      "existing_object_type",
+      "existing_diameter",
+      "required_diameter",
+      "cost"
+    ],
+    "heat_network_reconstruction": [
+      "id",
+      "object_type",
+      "variant_id",
+      "existing_object_id",
+      "existing_flow_tph",
+      "added_flow_tph",
+      "calculated_flow_tph",
+      "existing_diameter",
+      "required_diameter",
+      "length",
+      "cost"
+    ],
+    "heat_chamber": [
+      "id",
+      "object_type",
+      "variant_id",
+      "diameter",
+      "cost"
+    ],
+    "heat_chamber_reconstruction": [
+      "id",
+      "object_type",
+      "variant_id",
+      "existing_object_id",
+      "existing_diameter",
+      "required_diameter",
+      "cost"
+    ],
+    "technical_node": [
+      "id",
+      "object_type",
+      "variant_id"
+    ],
+    "variant_summary": [
+      "id",
+      "object_type",
+      "variant_id",
+      "rank",
+      "construction_cost",
+      "chamber_construction_cost",
+      "tie_in_cost",
+      "reconstruction_cost",
+      "chamber_reconstruction_cost",
+      "unconnected_penalty",
+      "calculated_cost",
+      "new_network_length",
+      "reconstruction_length",
+      "length",
+      "score",
+      "unconnected_oks_ids"
+    ]
+  }
+}
