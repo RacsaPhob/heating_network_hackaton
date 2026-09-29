@@ -7,5 +7,5 @@ tmp/
 .env
 .idea/
 .vscode/
-storage/
+/storage/
 .tools/

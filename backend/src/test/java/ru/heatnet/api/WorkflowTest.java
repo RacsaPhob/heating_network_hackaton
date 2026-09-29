@@ -16,10 +16,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class WorkflowTest {
     @Autowired MockMvc mvc;
     @Autowired ObjectMapper mapper;
-    @Test void strictSampleShowsErrorsInsteadOfGuessingMissingFlows() throws Exception {
+    @Test void strictSampleAcceptsTheCurrentInputSchema() throws Exception {
         mvc.perform(post("/api/v1/datasets/sample?mode=strict"))
-            .andExpect(status().isOk()).andExpect(jsonPath("$.status").value("INVALID"))
-            .andExpect(jsonPath("$.reconstruction_known").value(false));
+            .andExpect(status().isOk()).andExpect(jsonPath("$.status").value("READY"))
+            .andExpect(jsonPath("$.connection_count").value(17));
     }
     @Test void sampleUploadRouteAndExportWorksEndToEnd() throws Exception {
         String text=mvc.perform(post("/api/v1/datasets/sample?mode=demo")).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
@@ -42,12 +42,12 @@ class WorkflowTest {
         assertTrue(java.util.stream.StreamSupport.stream(history.spliterator(),false).anyMatch(row->row.path("id").asText().equals(id)));
         String csv=mvc.perform(get("/api/v1/jobs/"+id+"/report.csv")).andExpect(status().isOk())
             .andExpect(header().string("Content-Type","text/csv;charset=UTF-8")).andReturn().getResponse().getContentAsString(java.nio.charset.StandardCharsets.UTF_8);
-        assertTrue(csv.startsWith("\uFEFFМесто;"));assertTrue(csv.contains("не оценена"));
+        assertTrue(csv.startsWith("\uFEFFМесто;"));assertTrue(csv.contains("Строительство, руб."));
         String output=mvc.perform(get("/api/v1/jobs/"+id+"/result")).andExpect(status().isOk())
             .andExpect(header().exists("Content-Disposition")).andReturn().getResponse().getContentAsString();
         JsonNode geojson=mapper.readTree(output);
         assertEquals("FeatureCollection",geojson.path("type").asText());
-        assertFalse(geojson.path("heatnet_metadata").path("reconstruction_known").asBoolean());
+        assertTrue(geojson.path("heatnet_metadata").path("reconstruction_known").asBoolean());
         int summaryCount=0,edgeCount=0;
         for(JsonNode feature:geojson.path("features")) {
             JsonNode p=feature.path("properties");

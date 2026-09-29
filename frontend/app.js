@@ -141,8 +141,8 @@ async function acceptDataset(meta) {
   $('workspace-title').textContent=meta.name.replace(/\.geojson$/i,'');
   diagnostics(meta);drawSource();
   $('object-search').disabled=false;$('object-search').value='';
-  $('notice').classList.toggle('warning',!meta.reconstruction_known);
-  $('notice-text').textContent=!meta.reconstruction_known?'Нет данных о загрузке старой сети. Реконструкция не оценена, стоимость будет неполной.':'Эскизное моделирование. Результат требует инженерной проверки.';
+  $('notice').classList.toggle('warning',meta.status!=='READY');
+  $('notice-text').textContent=meta.status==='READY'?'Данные загружены. Расчёт по актуальному техприложению не включает реконструкцию старой сети.':'Исправьте ошибки входных данных перед расчётом.';
   localStorage.setItem('heatnet.dataset',meta.id);
 }
 async function sample() {
@@ -203,7 +203,7 @@ function renderVariants() {
   $('variants-list').replaceChildren();
   variants.forEach(variant=> {
     const summary=variant.summary;const button=document.createElement('button');button.className='variant';button.dataset.variant=variant.variant_id;
-    button.innerHTML='<div class="variant-top"><span class="variant-index">'+summary.rank+'</span>'+escapeText(variant.name)+'</div><div class="variant-cost">'+number(summary.calculated_cost/1e6,2)+' <em>млн ₽</em></div><div class="variant-meta"><span>'+number(summary.new_network_length,0)+' м новой сети</span><span>'+variant.connected_count+'/'+variant.total_count+' объектов</span></div>'+(!variant.checks_passed?'<div class="variant-warning">Есть нарушения · нужна доработка</div>':!variant.cost_complete?'<div class="variant-warning">Без оценки реконструкции</div>':'')+'<div class="variant-score">ОЦЕНКА '+number(summary.score,3)+' · '+variant.tie_in_count+' врезок</div>';
+    button.innerHTML='<div class="variant-top"><span class="variant-index">'+summary.rank+'</span>'+escapeText(variant.name)+'</div><div class="variant-cost">'+number(summary.calculated_cost/1e6,2)+' <em>млн ₽</em></div><div class="variant-meta"><span>'+number(summary.new_network_length,0)+' м новой сети</span><span>'+variant.connected_count+'/'+variant.total_count+' точек</span></div>'+(!variant.checks_passed?'<div class="variant-warning">Есть нарушения · нужна доработка</div>':'')+'<div class="variant-score">ОЦЕНКА '+number(summary.score,3)+' · '+variant.tie_in_count+' присоединений</div>';
     button.addEventListener('click',()=>selectVariant(variant));$('variants-list').appendChild(button);
   });
   if(variants.length) selectVariant(variants[0]);
@@ -224,13 +224,13 @@ function selectVariant(variant) {
   $('metric-objects').textContent=variant.connected_count+' / '+variant.total_count;
   $('metric-objects-note').textContent=summary.unconnected_oks_ids.length?'не подключены: '+summary.unconnected_oks_ids.join(', '):'подключены все объекты';
   $('metric-length').innerHTML=number(summary.new_network_length,0)+' <em>м</em>';
-  $('metric-length-note').textContent='реконструкция: '+(variant.cost_complete?number(summary.reconstruction_length,0)+' м':'не оценена');
+  $('metric-length-note').textContent='сумма длин новых участков';
   $('metric-cost').innerHTML=number(summary.calculated_cost/1e6,2)+' <em>млн ₽</em>';
-  $('metric-cost-note').textContent=variant.cost_complete?'включая реконструкцию и штрафы':'без оценки реконструкции';
-  $('notice').classList.toggle('warning',!variant.checks_passed||!variant.cost_complete);
-  $('notice-text').textContent=!variant.checks_passed?'В выбранном варианте есть нарушения. Откройте «Проверки и ограничения».':!variant.cost_complete?'Реконструкция не оценена: стоимость неполная. Допущения доступны в проверке данных.':'Выбранный вариант прошёл реализованные проверки. Требуется инженерная проверка проекта.';
-  const rows=[['construction_cost','Новые трубы'],['chamber_construction_cost','Новые камеры'],['tie_in_cost','Врезки'],['reconstruction_cost','Реконструкция труб'],['chamber_reconstruction_cost','Реконструкция камер'],['unconnected_penalty','Штраф за неподключение']];
-  $('cost-breakdown').innerHTML='<div class="cost-heading">Из чего складывается стоимость</div>'+rows.map(([key,label])=>'<div class="cost-row '+(key==='unconnected_penalty'&&summary[key]>0?'penalty':'')+'"><span>'+label+'</span><span>'+(!variant.cost_complete&&key.includes('reconstruction')?'не оценена':money(summary[key]))+'</span></div>').join('');
+  $('metric-cost-note').textContent='строительство и штрафы за неподключение';
+  $('notice').classList.toggle('warning',!variant.checks_passed);
+  $('notice-text').textContent=!variant.checks_passed?'В выбранном варианте есть нарушения. Откройте «Проверки и ограничения».':'Выбранный вариант прошёл реализованные проверки. Требуется инженерная проверка проекта.';
+  const rows=[['pipe_cost','Новые трубы'],['chamber_construction_cost','Новые камеры'],['existing_chamber_tie_in_cost','Врезки'],['unconnected_penalty','Штраф за неподключение']];
+  $('cost-breakdown').innerHTML='<div class="cost-heading">Из чего складывается стоимость</div>'+rows.map(([key,label])=>'<div class="cost-row '+(key==='unconnected_penalty'&&summary[key]>0?'penalty':'')+'"><span>'+label+'</span><span>'+money(key==='pipe_cost'?summary.construction_cost-summary.chamber_construction_cost-summary.existing_chamber_tie_in_cost:summary[key])+'</span></div>').join('');
   $('cost-breakdown').hidden=false;
   const notes=[...(variant.violations||[]),...(variant.notes||[]),...(state.job.metadata?.limitations||[])];
   if(summary.unconnected_oks_ids.length) notes.unshift('Маршрут не найден для ОКС: '+summary.unconnected_oks_ids.join(', '));
@@ -285,16 +285,15 @@ function openComparison() {
   const variants=state.job.variants;
   const rows=[
     ['Подключённые объекты',v=>v.connected_count+' / '+v.total_count],
-    ['Расходы на работы',v=>money(v.summary.calculated_cost-v.summary.unconnected_penalty)],
-    ['Новые трубы',v=>money(v.summary.construction_cost)],['Новые камеры',v=>money(v.summary.chamber_construction_cost)],
-    ['Врезки',v=>money(v.summary.tie_in_cost)],['Реконструкция труб',v=>v.cost_complete?money(v.summary.reconstruction_cost):'Не оценена'],
-    ['Реконструкция камер',v=>v.cost_complete?money(v.summary.chamber_reconstruction_cost):'Не оценена'],
+    ['Расходы на работы',v=>money(v.summary.construction_cost)],
+    ['Новые трубы',v=>money(v.summary.construction_cost-v.summary.chamber_construction_cost-v.summary.existing_chamber_tie_in_cost)],
+    ['Новые камеры',v=>money(v.summary.chamber_construction_cost)],
+    ['Врезки в существующие камеры',v=>money(v.summary.existing_chamber_tie_in_cost)],
     ['Штраф за неподключение',v=>money(v.summary.unconnected_penalty)],
     ['Итого для ранжирования',v=>money(v.summary.calculated_cost)],
     ['Длина новой сети',v=>number(v.summary.new_network_length,1)+' м'],
-    ['Длина реконструкции',v=>v.cost_complete?number(v.summary.reconstruction_length,1)+' м':'Не оценена'],
     ['Вклад стоимости в оценку',v=>number(.7*v.summary.calculated_cost/25000000,3)],
-    ['Вклад длины в оценку',v=>number(.3*v.summary.length/100,3)],
+    ['Вклад длины в оценку',v=>number(.3*v.summary.new_network_length/100,3)],
     ['Итоговая оценка',v=>number(v.summary.score,3)],
     ['Реализованные проверки',v=>v.checks_passed?'Пройдены':'Есть нарушения']
   ];

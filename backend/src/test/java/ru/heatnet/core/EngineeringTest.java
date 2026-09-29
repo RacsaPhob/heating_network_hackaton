@@ -26,7 +26,7 @@ class EngineeringTest {
         assertTrue(projected.y>6000000&&projected.y<6300000);
         assertTrue(projected.distance(Geo.project(37.641,55.70))>60);
     }
-    @Test void twoTieInsReconstructOnlyUpstreamIntervalsAndSumSharedFlow() {
+    @Test void twoNewChambersIncludeConnectionButDoNotReconstructOldNetwork() {
         Dataset data=new Dataset();
         Dataset.Item source=item("source","source",Geo.GF.createPoint(new Coordinate(0,0)),Geo.map());
         Dataset.Item network=item("network","heat_network",Geo.line(new Coordinate(0,0),new Coordinate(1000,0)),
@@ -35,20 +35,16 @@ class EngineeringTest {
         Router.Candidate candidate=new Router.Candidate();candidate.name="Test";
         candidate.roots.add(root(network,200,10));candidate.roots.add(root(network,800,20));
         Engineering.Evaluated result=new Engineering(catalog).evaluate(data,candidate,"1");
-        List<Map<String,Object>> parts=new ArrayList<>();
+        List<Map<String,Object>> chambers=new ArrayList<>();
         for(Map<String,Object> feature:result.features) {
             Map<String,Object> props=(Map<String,Object>)feature.get("properties");
-            if(props.get("object_type").equals("heat_network_reconstruction")) parts.add(props);
+            if(props.get("object_type").equals("heat_chamber")) chambers.add(props);
+            assertNotEquals("heat_network_reconstruction",props.get("object_type"));
         }
-        assertEquals(2,parts.size());
-        assertEquals(200d,(Double)parts.get(0).get("length"),1e-6);
-        assertEquals(30d,(Double)parts.get(0).get("added_flow_tph"),1e-6);
-        assertEquals(125,parts.get(0).get("required_diameter"));
-        assertEquals(600d,(Double)parts.get(1).get("length"),1e-6);
-        assertEquals(20d,(Double)parts.get(1).get("added_flow_tph"),1e-6);
-        assertEquals(100,parts.get(1).get("required_diameter"));
-        assertEquals(800d,(Double)result.summary.get("reconstruction_length"),1e-6);
-        assertEquals(200*148030d+600*133694d,(Double)result.summary.get("reconstruction_cost"),1e-6);
+        assertEquals(2,chambers.size());
+        assertEquals(6000000d,(Double)result.summary.get("construction_cost"),1e-6);
+        assertEquals(6000000d,(Double)result.summary.get("chamber_construction_cost"),1e-6);
+        assertEquals(0,(Integer)result.summary.get("existing_chamber_tie_in_count"));
     }
     @Test void nodeDoesNotResetContinuousDiameterLength() {
         Dataset data=new Dataset();data.reconstructionKnown=false;

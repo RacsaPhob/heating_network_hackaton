@@ -81,15 +81,15 @@ public class Router {
             // A narrow terminal access corridor is an explicit demo assumption for unlabelled building footprints.
             for(Dataset.Connection c:data.connections) {
                 Point point=Geo.GF.createPoint(c.point);
-                boolean ownFuture=item.type.equals("oks_future")&&item.id.equals(c.oksId);
-                if(building&&buffered.covers(point)&&(data.demo||ownFuture)) {
+                boolean ownBuilding=item.geometry.covers(point);
+                if(building&&buffered.covers(point)&&ownBuilding) {
                     Coordinate border=DistanceOp.nearestPoints(point,buffered.getBoundary())[1];
                     double dx=border.x-c.point.x,dy=border.y-c.point.y,len=Math.hypot(dx,dy);
                     if(len>0) {
                         Coordinate outside=new Coordinate(border.x+dx/len*3,border.y+dy/len*3);
                         buffered=buffered.difference(Geo.line(c.point,outside).buffer(Math.max(1.5,maxPipe.width/2+.5),2));
                         space.exits.put(c.id,outside);
-                        notes.add("Подход к точке "+c.id+": выделен узкий коридор через отступ здания"+(ownFuture?".":" (допущение деморежима)."));
+                        notes.add("Подход к точке "+c.id+": выделен прямой коридор к собственному полигону ОКС.");
                     }
                 }
             }

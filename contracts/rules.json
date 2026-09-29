@@ -329,6 +329,27 @@
       "coefficient": 1.05,
       "vertical_gap_m": 0.5,
       "existing_top_depth_m": 3.0
+    },
+    "oks": {
+      "crossing": "forbidden",
+      "clearance_by_diameter_m": [
+        {
+          "max_diameter_exclusive": 500,
+          "clearance_m": 5
+        },
+        {
+          "max_diameter_inclusive": 800,
+          "clearance_m": 7
+        },
+        {
+          "min_diameter_inclusive": 900,
+          "clearance_m": 9
+        }
+      ]
+    },
+    "railway": {
+      "crossing": "forbidden",
+      "clearance_m": 1
     }
   },
   "unknown_restriction_policy": "error",
@@ -336,12 +357,12 @@
     "optional_mode": true,
     "base_top_depth_m": 3.0,
     "min_top_depth_m": 0.7,
-    "step_m": 0.5,
+    "step_m": null,
     "max_slope": 0.1,
     "extra_cost_per_m_below_base": 0.1,
     "max_depth_m": null,
     "grid_origin_m": null,
-    "note": "Maximum depth and grid origin require clarification; null is not an unlimited search range."
+    "note": "Дополнительный режим; дискретный шаг и максимальная глубина не заданы."
   },
   "output_required_properties": {
     "heat_network": [
@@ -358,43 +379,11 @@
       "depth_end",
       "cost"
     ],
-    "tie_in": [
-      "id",
-      "object_type",
-      "variant_id",
-      "existing_object_id",
-      "existing_object_type",
-      "existing_diameter",
-      "required_diameter",
-      "cost"
-    ],
-    "heat_network_reconstruction": [
-      "id",
-      "object_type",
-      "variant_id",
-      "existing_object_id",
-      "existing_flow_tph",
-      "added_flow_tph",
-      "calculated_flow_tph",
-      "existing_diameter",
-      "required_diameter",
-      "length",
-      "cost"
-    ],
     "heat_chamber": [
       "id",
       "object_type",
       "variant_id",
       "diameter",
-      "cost"
-    ],
-    "heat_chamber_reconstruction": [
-      "id",
-      "object_type",
-      "variant_id",
-      "existing_object_id",
-      "existing_diameter",
-      "required_diameter",
       "cost"
     ],
     "technical_node": [
@@ -409,14 +398,11 @@
       "rank",
       "construction_cost",
       "chamber_construction_cost",
-      "tie_in_cost",
-      "reconstruction_cost",
-      "chamber_reconstruction_cost",
+      "existing_chamber_tie_in_count",
+      "existing_chamber_tie_in_cost",
       "unconnected_penalty",
       "calculated_cost",
       "new_network_length",
-      "reconstruction_length",
-      "length",
       "score",
       "unconnected_oks_ids"
     ]

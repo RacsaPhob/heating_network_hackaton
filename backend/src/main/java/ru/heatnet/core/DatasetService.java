@@ -81,7 +81,6 @@ public class DatasetService {
                         item.id=properties.path("id").asText();item.type=properties.path("object_type").asText();
                         if(item.id.isEmpty()||data.byId.containsKey(item.id)) throw new IllegalArgumentException("Пустой или повторяющийся ID: "+item.id);
                         item.properties=properties;item.raw=raw;
-                        if(!properties.path("id").isTextual()) problem(data,"Числовые ID преобразованы в строки во внутренней модели.");
                         try {item.geometry=Geo.read(raw.path("geometry"));}
                         catch(IllegalArgumentException ex) {throw new IllegalArgumentException("Объект "+item.id+": "+ex.getMessage());}
                         coordinateCount+=item.geometry.getNumPoints();
@@ -97,15 +96,13 @@ public class DatasetService {
                         data.items.add(item);data.byId.put(item.id,item);
                         if(item.type.equals("heat_network")) {
                             data.networks.add(item);catalog.forDiameter(item.diameter());
-                            if(!validFlow(properties.path("flow_tph"))||!properties.path("upstream_object_id").isTextual()) data.reconstructionKnown=false;
                         }
                         if(item.type.equals("heat_chamber")) {
                             data.chambers.add(item);
-                            if(!properties.path("diameter").isIntegralNumber()||!properties.path("upstream_object_id").isTextual()) data.reconstructionKnown=false;
                         }
                         if(item.type.equals("restriction")) {
-                            if(item.restriction.equals("oks")) problem(data,"restriction_type=oks трактуется как существующее здание; принадлежность точек зданиям не задана.");
-                            else if(!catalog.raw.path("restrictions").has(item.restriction)) problem(data,"Для "+item.restriction+" нет правила: в деморежиме принят полный запрет пересечения с отступом 1 м.");
+                            if(!catalog.raw.path("restrictions").has(item.restriction))
+                                data.warnings.add("Для "+item.restriction+" нет правила: принят консервативный запрет пересечения с отступом 1 м.");
                         }
                     }
                 } else parser.skipChildren();
@@ -114,40 +111,16 @@ public class DatasetService {
         }
         if(!featuresFound||!"FeatureCollection".equals(rootType)) throw new IllegalArgumentException("Ожидается GeoJSON FeatureCollection");
         if(data.bounds.getWidth()>20000||data.bounds.getHeight()>20000) data.errors.add("MVP работает с территориями до 20 × 20 км.");
-        if(!data.reconstructionKnown) problem(data,"Реконструкция не оценена: отсутствуют исходные расходы, диаметры камер или upstream-связи. Итоговая стоимость неполная; пропускная способность старой сети не подтверждена.");
         long sources=data.items.stream().filter(i->i.type.equals("source")).count();
         if(sources!=1) problem(data,"В наборе должен быть ровно один источник.");
-        Set<String> connectedOks=new HashSet<>();
         for(Dataset.Item item:data.items) if(item.type.equals("oks_connection_point")) {
-            String oksId=item.properties.path("oks_id").asText(); Dataset.Item oks=data.byId.get(oksId);
-            double flow;
-            if(oks!=null&&oks.type.equals("oks_future")&&validFlow(oks.properties.path("flow_tph"))) {
-                flow=oks.flow();
-                if(!validFlow(oks.properties.path("heat_load"))) problem(data,"У перспективных ОКС отсутствует корректная heat_load.");
-                if(!connectedOks.add(oksId)) data.errors.add("Несколько точек подключения для ОКС "+oksId);
-            } else {
-                problem(data,"Нет oks_future/oks_id: каждая точка рассматривается как отдельный потребитель с её собственным flow_tph. ID потребителя в демо совпадает с ID точки.");
-                if(!validFlow(item.properties.path("flow_tph"))) {data.errors.add("Нет расхода потребителя "+item.id);continue;}
-                flow=item.flow();oksId=item.id;
-            }
-            catalog.forFlow(flow);
-            data.connections.add(new Dataset.Connection(item.id,oksId,item.geometry.getCoordinate(),flow));
+            if(!validFlow(item.properties.path("flow_tph"))) {data.errors.add("Нет расхода точки "+item.id);continue;}
+            double flow=item.flow();catalog.forFlow(flow);
+            data.connections.add(new Dataset.Connection(item.id,item.id,item.geometry.getCoordinate(),flow));
         }
-        for(Dataset.Item item:data.items) if(item.type.equals("oks_future")&&!connectedOks.contains(item.id)) data.errors.add("Нет корректной точки подключения для ОКС "+item.id);
         if(data.networks.isEmpty()) data.errors.add("Нет существующей тепловой сети.");
         if(data.connections.isEmpty()) data.errors.add("Нет точек подключения с известным расходом.");
         if(data.connections.size()>100) data.errors.add("MVP рассчитывает до 100 потребителей.");
-        // Validate upstream references even when their geometries are not ordered.
-        if(data.reconstructionKnown) {
-            for(Dataset.Item item:data.items) if(item.type.equals("heat_network")||item.type.equals("heat_chamber")) {
-                Set<String> seen=new HashSet<>();Dataset.Item current=item;
-                while(current!=null&&!current.type.equals("source")) {
-                    if(!seen.add(current.id)) {data.errors.add("Цикл upstream у "+item.id);break;}
-                    current=data.byId.get(current.properties.path("upstream_object_id").asText());
-                    if(current==null||!Arrays.asList("source","heat_network","heat_chamber").contains(current.type)) {data.errors.add("Некорректная upstream-цепочка у "+item.id);break;}
-                }
-            }
-        }
         return data;
     }
     private boolean validFlow(JsonNode value) {return value.isNumber()&&Double.isFinite(value.asDouble())&&value.asDouble()>=0;}
